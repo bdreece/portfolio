@@ -1,0 +1,12 @@
+@use 'helpers';
+
+.taskbar {
+  position: absolute;
+  z-index: 5;
+  bottom: 0;
+  left: 0.125vw;
+  width: 99.25vw;
+  height: 1.5rem;
+
+  @include helpers.box();
+}

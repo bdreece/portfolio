@@ -1,0 +1,14 @@
+.window {
+  position: relative;
+  z-index: 5;
+}
+
+.max {
+  left: 0.125vw;
+  width: 99.25vw;
+  height: calc(100vh - 2rem);
+}
+
+.min {
+  display: none;
+}
