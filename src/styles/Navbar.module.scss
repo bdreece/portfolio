@@ -1,0 +1,14 @@
+@use 'helpers';
+
+.navbar {
+  @include helpers.box($align: center);
+
+  ul {
+    @include helpers.box($align: center);
+    gap: 1rem;
+  }
+  li {
+    list-style-type: none;
+    margin-block: auto;
+  }
+}

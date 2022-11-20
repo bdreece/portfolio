@@ -6,3 +6,9 @@ body {
 .spacer {
   flex: 1;
 }
+
+.title-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
