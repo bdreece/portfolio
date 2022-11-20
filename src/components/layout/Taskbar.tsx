@@ -7,12 +7,13 @@ import styles from '../../styles/Taskbar.module.scss';
 const getTime = (): string => {
   const date = new Date();
   let ampm = 'AM';
-  let hours = date.getHours();
-  if (hours > 12) {
-    hours -= 12;
+  let hoursNum = date.getHours();
+  if (hoursNum > 12) {
+    hoursNum -= 12;
     ampm = 'PM';
   }
-  const minutes = date.getMinutes();
+  const hours = `0${hoursNum}`.substring(-2);
+  const minutes = `0${date.getMinutes()}`.substring(-2);
   return `${hours}:${minutes} ${ampm}`;
 };
 

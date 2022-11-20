@@ -2,7 +2,7 @@ import type { DragEventHandler, DragEvent, FC } from 'react';
 import type { ChildrenProps } from 'types/children';
 import type { WindowTitleProps } from './WindowTitle';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import WindowTitle from './WindowTitle';
 import styles from '../../styles/Window.module.scss';
@@ -34,18 +34,29 @@ const getCoords = (e: DragEvent<HTMLInputElement>): WindowCoords => ({
   y: e.clientY,
 });
 
-const Window: FC<WindowProps> = ({ children, debug = false, ...titleBar }) => {
-  const [{ x, y }, setCoords] = useState<WindowCoords>({ x: 0, y: 0 });
-  const [size, setSize] = useState<WindowSize>('max');
+const Window: FC<WindowProps> = ({ children, title, debug = false }) => {
+  const windowRef = useRef<HTMLElement>(null);
+  const [{ x, y }, setCoords] = useState<WindowCoords>({ x: 100, y: 50 });
+  const [size, setSize] = useState<WindowSize>('var');
   const [varSize, setVarSize] = useState<WindowVarSize>({});
 
   useEffect(() => {
     if (size === 'var') {
       const oldVarSize: WindowVarSize = JSON.parse(
-        localStorage.getItem('varSize') ?? '{}',
+        sessionStorage.getItem('varSize') ??
+          '{ "width": "800px", "height": "400px" }',
       );
       setVarSize(oldVarSize);
     } else {
+      if (windowRef.current) {
+        sessionStorage.setItem(
+          'varSize',
+          JSON.stringify({
+            width: windowRef.current.clientWidth,
+            height: windowRef.current.clientHeight,
+          }),
+        );
+      }
       setVarSize({});
     }
   }, [size]);
@@ -86,8 +97,18 @@ const Window: FC<WindowProps> = ({ children, debug = false, ...titleBar }) => {
   const sizeClass =
     size === 'max' ? styles.max : size === 'min' ? styles.min : '';
 
+  const windowTitle: WindowTitleProps = {
+    title,
+    onMaximize: _ => {
+      setSize(size => (size === 'max' ? 'var' : 'max'));
+      setCoords({ x: 0, y: 0 });
+    },
+    onMinimize: _ => setSize('min'),
+  };
+
   return (
     <article
+      ref={windowRef}
       className={`window ${styles.window} ${sizeClass}`}
       style={{
         top: `${y}px`,
@@ -97,8 +118,10 @@ const Window: FC<WindowProps> = ({ children, debug = false, ...titleBar }) => {
       draggable={true}
       {...handlers}
     >
-      <WindowTitle {...titleBar} />
-      <section className='window-body'>{children}</section>
+      <WindowTitle {...windowTitle} />
+      <section className={`window-body ${styles.windowBody}`}>
+        {children}
+      </section>
     </article>
   );
 };
