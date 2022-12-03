@@ -12,8 +12,8 @@ const getTime = (): string => {
     hoursNum -= 12;
     ampm = 'PM';
   }
-  const hours = `0${hoursNum}`.substring(-2);
-  const minutes = `0${date.getMinutes()}`.substring(-2);
+  const hours = `0${hoursNum}`.slice(-2);
+  const minutes = `0${date.getMinutes()}`.slice(-2);
   return `${hours}:${minutes} ${ampm}`;
 };
 
